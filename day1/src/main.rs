@@ -20,12 +20,19 @@ fn main() {
         }
         Err(e) => {
             eprintln!("Error reading file: {}", e);
+            return;
         }
     }
 
-    let cleaned_contents: String = contents.chars().filter(|c| !c.is_whitespace()).filter(|c| *c != '\n').collect();
+    let cleaned_contents: String = contents
+        .chars()
+        .filter(|c| !c.is_whitespace())
+        .filter(|c| *c != '\n')
+        .collect();
 
-    let directions: Vec<&str> = cleaned_contents.split(',').collect();
+    let directions: Vec<&str> = cleaned_contents
+        .split(',')
+        .collect();
 
     println!("{:?}", directions);
     
@@ -57,26 +64,20 @@ fn main() {
     let mut done: bool = false;
 
     for (direction, value) in &directions_map {
-        if (*direction == 'R') {
-            dir = (dir + 1) % 4;
+        match *direction {
+            'R' => dir = (dir + 1) % 4,
+            'L' => dir = (dir + 3) % 4,
+            _ => println!("Warning: case could not be matched")
         }
-        if (*direction == 'L') {
-            dir = (dir + 3) % 4;
-        }
-        for i in 1..=*value {
-            if (dir == 0) {
-                y = y + 1;
+        for _ in 1..=*value {
+            match dir {
+                0 => y = y + 1,
+                1 => x = x + 1,
+                2 => y = y - 1,
+                3 => x = x - 1,
+                _ => println!("Warning: case could not be matched")
             }
-            if (dir == 1) {
-                x = x + 1;
-            }
-            if (dir == 2) {
-                y = y - 1;
-            }
-            if (dir == 3) {
-                x = x - 1;
-            }
-            if (!done && res.contains(&(x, y))) {
+            if !done && res.contains(&(x, y)) {
                 println!("result part 2: {}", x + y);
                 done = true;
             }
@@ -84,5 +85,4 @@ fn main() {
         }
     }
     println!("result part 1: {}", x + y);
-
 }
